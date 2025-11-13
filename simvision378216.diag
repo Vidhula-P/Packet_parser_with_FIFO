@@ -1,0 +1,84 @@
+*** Message Type: info ***
+When: Wed Nov 12 11:13:28 PM EST 2025
+SimVision started.
+Version: TOOL:  simvision(64)   24.03-s005
+User: vp278
+Host: en-ec-rhel-ecelinux-11.coecis.cornell.edu
+Platform: Linux/x86_64/4.18.0-553.82.1.el8_10.x86_64
+Started: Wed Nov 12 11:13:28 PM EST 2025
+Command: /opt/cadence/XCELIUM2403/tools.lnx86/simvision/bin/64bit/simvision.exe -connect dc:en-ec-rhel-ecelinux-11.coecis.cornell.edu:44857 -64BIT -nocopyright
+Work Directory: /home/vp278/Cadence_projects/packet_parser_dma_engine
+ 
+*** Message Type: info ***
+When: Wed Nov 12 11:13:28 PM EST 2025
+Create browser window: "Design Browser 1"
+ 
+*** Message Type: info ***
+When: Wed Nov 12 11:13:29 PM EST 2025
+Create console window: "Console"
+ 
+*** Message Type: info ***
+When: Wed Nov 12 11:13:30 PM EST 2025
+Connect to Simulator
+      Design: worklib.fifo_tb:sv
+   Languages: verilog
+   Simulator: XM-Sim
+     Version: TOOL: xmsim(64)       24.03-s005
+        User: vp278
+        Host: en-ec-rhel-ecelinux-11.coecis.cornell.edu
+Time Started: Wed Nov 12 11:13:27 PM EST 2025
+  Process ID: 378189
+   Directory: /home/vp278/Cadence_projects/packet_parser_dma_engine
+     Command: xrun -f run.f -access rwc -gui
+
+ 
+*** Message Type: info ***
+When: Wed Nov 12 11:13:30 PM EST 2025
+Create utility window: "Properties"
+ 
+*** Message Type: info ***
+When: Wed Nov 12 11:41:08 PM EST 2025
+Exit XM-Sim: user
+      Design: worklib.fifo_tb:sv
+   Languages: verilog
+   Simulator: XM-Sim
+     Version: TOOL: xmsim(64)       24.03-s005
+        User: vp278
+        Host: en-ec-rhel-ecelinux-11.coecis.cornell.edu
+Time Started: Wed Nov 12 11:13:27 PM EST 2025
+  Process ID: 378189
+   Directory: /home/vp278/Cadence_projects/packet_parser_dma_engine
+     Command: xrun -f run.f -access rwc -gui
+
+ 
+*** Message Type: error ***
+When: Wed Nov 12 11:41:08 PM EST 2025
+XM-Sim Crashed:
+      Design: worklib.fifo_tb:sv
+   Languages: verilog
+   Simulator: XM-Sim
+     Version: TOOL: xmsim(64)       24.03-s005
+        User: vp278
+        Host: en-ec-rhel-ecelinux-11.coecis.cornell.edu
+Time Started: Wed Nov 12 11:13:27 PM EST 2025
+  Process ID: 378189
+   Directory: /home/vp278/Cadence_projects/packet_parser_dma_engine
+     Command: xrun -f run.f -access rwc -gui
+      Design: worklib.fifo_tb:sv
+   Languages: verilog
+   Simulator: XM-Sim
+     Version: TOOL:      xmsim(64)       24.03-s005
+        User: vp278
+        Host: en-ec-rhel-ecelinux-11.coecis.cornell.edu
+Time Started: Wed Nov 12 11:13:27 PM EST 2025
+  Process ID: 378189
+   Directory: /home/vp278/Cadence_projects/packet_parser_dma_engine
+     Command: xrun -f run.f -access rwc -gui
+
+Outstanding STRAP Requests:
+        strap::report enable out
+ 
+*** Message Type: info ***
+When: Wed Nov 12 11:41:12 PM EST 2025
+SimVision Exit.
+ 

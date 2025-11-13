@@ -1,0 +1,31 @@
+$date
+    Nov 12, 2025  21:09:22
+$end
+$version
+    TOOL:	xmsim(64)	24.03-s005
+$end
+$timescale
+    100 ps
+$end
+
+$scope module fifo_tb $end
+$var parameter 32 !    WIDTH $end
+$var parameter 32 "    DEPTH $end
+
+$scope module fifo_dut $end
+$var parameter 32 #    WIDTH $end
+$var parameter 32 $    DEPTH $end
+$var parameter 32 %    ADDR_WIDTH $end
+$upscope $end
+
+$upscope $end
+
+$enddefinitions $end
+$dumpvars
+b100 %
+b10000 $
+b100000 #
+b10000 "
+b100000 !
+$end
+#1912434072000

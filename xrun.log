@@ -1,0 +1,88 @@
+xrun(64): 24.03-s005: (c) Copyright 1995-2024 Cadence Design Systems, Inc.
+TOOL:	xrun(64)	24.03-s005: Started on Nov 12, 2025 at 23:42:02 EST
+xrun
+	-f run.f
+		rtl/fifo.sv
+		tb/fifo_tb.sv
+	-access rwc
+	-gui
+xmsim: *W,NOMTDGUI: Multi-Threaded Dumping is disabled for interactive debug mode.
+
+-------------------------------------
+Relinquished control to SimVision...
+xcelium> 
+xcelium> source /opt/cadence/XCELIUM2403/tools/xcelium/files/xmsimrc
+xcelium> database -open waves -into waves.shm -default
+Created default SHM database waves
+xcelium> probe -create -shm fifo_tb.rst fifo_tb.fifo_dut.clk fifo_tb.fifo_dut.wr_en fifo_tb.fifo_dut.wdata fifo_tb.fifo_dut.rd_en fifo_tb.fifo_dut.rdata
+Created probe 1
+xcelium> run -return
+xmsim: *E,RNNOSP: Not executing inside a subprogram.
+xcelium> run
+Write pointer- 0
+Write: 0, empty_flag=0, full_flag=0
+Write pointer- 1
+Write: 1, empty_flag=0, full_flag=0
+Write pointer- 2
+Write: 2, empty_flag=0, full_flag=0
+Write pointer- 3
+Write: 3, empty_flag=0, full_flag=0
+Write pointer- 4
+Write: 4, empty_flag=0, full_flag=0
+Write pointer- 5
+Write: 5, empty_flag=0, full_flag=0
+Write pointer- 6
+Write: 6, empty_flag=0, full_flag=0
+Write pointer- 7
+Write: 7, empty_flag=0, full_flag=0
+Write pointer- 8
+Write: 8, empty_flag=0, full_flag=0
+Write pointer- 9
+Write: 9, empty_flag=0, full_flag=0
+Write pointer- a
+Write: 10, empty_flag=0, full_flag=0
+Write pointer- b
+Write: 11, empty_flag=0, full_flag=0
+Write pointer- c
+Write: 12, empty_flag=0, full_flag=0
+Write pointer- d
+Write: 13, empty_flag=0, full_flag=0
+Write pointer- e
+Write: 14, empty_flag=0, full_flag=0
+Write pointer- f
+Read pointer- 0
+Read: 0, empty_flag=0, full_flag=0
+Read pointer- 1
+Read: 1, empty_flag=0, full_flag=0
+Read pointer- 2
+Read: 2, empty_flag=0, full_flag=0
+Read pointer- 3
+Read: 3, empty_flag=0, full_flag=0
+Read pointer- 4
+Read: 4, empty_flag=0, full_flag=0
+Read pointer- 5
+Read: 5, empty_flag=0, full_flag=0
+Read pointer- 6
+Read: 6, empty_flag=0, full_flag=0
+Read pointer- 7
+Read: 7, empty_flag=0, full_flag=0
+Read pointer- 8
+Read: 8, empty_flag=0, full_flag=0
+Read pointer- 9
+Read: 9, empty_flag=0, full_flag=0
+Read pointer- a
+Read: 10, empty_flag=0, full_flag=0
+Read pointer- b
+Read: 11, empty_flag=0, full_flag=0
+Read pointer- c
+Read: 12, empty_flag=0, full_flag=0
+Read pointer- d
+Read: 13, empty_flag=0, full_flag=0
+Read pointer- e
+Read: 14, empty_flag=0, full_flag=0
+Read pointer- f
+Simulation complete via $finish(1) at time 3450 NS + 0
+./tb/fifo_tb.sv:79 		$finish;
+xcelium> ^C
+xcelium> exit
+TOOL:	xrun(64)	24.03-s005: Exiting on Nov 12, 2025 at 23:51:50 EST  (total: 00:09:48)
