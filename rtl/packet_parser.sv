@@ -1,8 +1,8 @@
 // CONTROL SIGNALS 
-// valid_in → upstream (packet source) has data available to read. 
-// ready_in → parser is ready to accept data. 
-// valid_out → parser has data ready to send to FIFO. 
-// ready_out → FIFO is ready to accept data.
+// valid_in  - upstream (packet source) has data available to read
+// ready_in  - parser is ready to accept data
+// valid_out - parser has data ready to send to FIFO 
+// ready_out - FIFO is ready to accept data
 
 module packet_parser #(
     parameter WIDTH = 32
@@ -29,7 +29,7 @@ module packet_parser #(
         ETH_HDR,
         IP_HDR,
         TCP_HDR,
-        PAYLOAD
+        PAYLOAD //simulatenously start 
     } state_t;
 
     state_t curr_state, next_state;
@@ -39,16 +39,17 @@ module packet_parser #(
     logic [127:0] ethernet_header;  // 16B  = 128 bits
     logic [159:0] ip_header;        // 20B  = 160 bits
     logic [159:0] tcp_header;       // 20B  = 160 bits
-    logic [319:0] payload_data;     // 40B  = 320 bits
 		//The packet buffer (in memory) is padded or aligned to the 
 		//data-bus word width, hence the headers are word-aligned
 
     // ----------------------------------------
     // Handshake logic (minimal behavior)
     // ----------------------------------------
-    assign ready_in  = 1'b1;            // always ready for now
-    assign valid_out = 1'b0;            // not driving FIFO yet
-    assign data_out  = '0;
+    //assign ready_in  = 1'b1;            // always ready for now
+    //assign valid_out = 1'b0;            // not driving FIFO yet
+    //assign data_out  = '0;
+		assign ready_in  = (curr_state == PAYLOAD) ? ready_out : 1'b1;
+		assign valid_out = (curr_state == PAYLOAD) ? valid_in  : 1'b0;
 
     // ----------------------------------------
     // State + counter update
@@ -86,7 +87,8 @@ module packet_parser #(
                 if (valid_in && word_cnt == 14)   // 5 words: 10..14
                     next_state = PAYLOAD;
             PAYLOAD:
-                if (valid_in && word_cnt == 24)   // 10 words: 15..24
+                if (valid_in && word_cnt == 24)
+										// (fixed for now) 10 words:15..24
                     next_state = IDLE;
             default:
                 next_state = IDLE;
@@ -101,11 +103,11 @@ module packet_parser #(
             ethernet_header <= '0;
             ip_header       <= '0;
             tcp_header      <= '0;
-            payload_data    <= '0;
 
         end else begin
 						// next_state reflects the new header state in the same cycle as valid_in.
-						// curr_state lags by one cycle, so using it would shift each header by one word.
+						// curr_state lags by one cycle, so using it would shift each header 
+						// by one word.
             case (next_state)
 								IDLE:;
                 ETH_HDR: begin
@@ -117,9 +119,10 @@ module packet_parser #(
                 TCP_HDR: begin
                     tcp_header <= {data_in, tcp_header[159:32]}; 				// 160-32 = 128
 								end
-                PAYLOAD: begin
-                    payload_data <= {data_in, payload_data[319:32]}; 		// 320-32 = 289
-								end
+                PAYLOAD: 
+										if( valid_in && ready_out) begin
+                    	data_out <= data_in; 		// pass through
+										end
             endcase
         end
     end
