@@ -63,7 +63,7 @@ module packet_parser #(
 
             if (valid_in && ready_in)
                 word_cnt <= word_cnt + 1;
-            else if (curr_state != next_state)
+            else if (curr_state == IDLE)
                 word_cnt <= 0;
         end
     end
