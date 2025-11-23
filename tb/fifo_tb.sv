@@ -45,24 +45,27 @@ module fifo_tb;
 		rst = 1;
 	end
 
+	logic [383:0] sample;
+
 	//TEST 1 - SIMPLE CASE
 	initial begin
+		sample = 384'hD4F40099D4F40099D4F40099D4F40099D4F40099D4F40099D4F40099D4F40099D4F40099D4F40099281B86C4281B86C4;
 		@(negedge rst); //wait if reset
 		//write sample data
-		for (int i = 0; i < DEPTH; i++) begin
+		for (int i = 0; i < 384; i+=32) begin
 			@(posedge clk);
-			wdata = i;
+			wdata = sample[(9'd383-i)-:32];
 			wr_en = 1'b1;
 		end
 		@(posedge clk);
 		wr_en = 1'b0;
 
 		// Try writing one more word to test full
-    @(posedge clk);
+    /*@(posedge clk);
     wdata = 99;
     wr_en = 1;
     @(posedge clk);
-    wr_en = 0;
+    wr_en = 0;*/
 
     // Read all data
     for (int i = 0; i < DEPTH; i++) begin
@@ -101,9 +104,9 @@ module fifo_tb;
   // Monitor
   always @(posedge clk) begin
     if (wr_en && !full_flag) begin
-      $display("Write: %0d, empty_flag=%b, full_flag=%b", wdata, empty_flag, full_flag);
+      $display("Write: %0h, empty_flag=%b, full_flag=%b", wdata, empty_flag, full_flag);
     end if (rd_en && !empty_flag) begin
-      $display("Read: %0d, empty_flag=%b, full_flag=%b", rdata, empty_flag, full_flag);
+      $display("Read: %0h, empty_flag=%b, full_flag=%b", rdata, empty_flag, full_flag);
     end
 	end
 
