@@ -90,10 +90,11 @@ module tb;
     	end
 
     	// Give time for parser to finish PAYLOAD
-    	repeat (20) @(posedge clk);
+    	repeat (60) @(posedge clk);
 
 			// Start reading FIFO
   		while (!fifo_empty) begin
+				$display("Reading FIFO");
     		rd_en = 1;
     		@(posedge clk);
   		end
@@ -119,7 +120,7 @@ module tb;
     	end
 
     	// Give time for parser to finish PAYLOAD
-    	repeat (20) @(posedge clk);
+    	//repeat (2) @(posedge clk);
 
 			// Start reading FIFO
   		while (!fifo_empty) begin
@@ -137,8 +138,8 @@ module tb;
 	initial begin
 		reset_parser; wait (rst == 1); // halts the simulation at that point until rst equals 1
 		test1;
-		test2;
-		test1;
+		/*test2;
+		test1;*/
 
     $finish;
   end

@@ -29,25 +29,42 @@ module packet_parser #(
         ETH_HDR,
         IP_HDR,
         TCP_HDR,
-        PAYLOAD //simulatenously start 
+        PAYLOAD, //simulatenously start sending to FIFO
+				CRC_START,
+    		CRC_WAIT,
+    		CRC_SEND
     } state_t;
 
     state_t curr_state, next_state;
 
     logic [4:0] word_cnt;
 
-    logic [127:0] ethernet_header;  // 16B  = 128 bits
-    logic [159:0] ip_header;        // 20B  = 160 bits
-    logic [159:0] tcp_header;       // 20B  = 160 bits
+    logic [127:0] ethernet_header;  // 16B = 128 bits
+    logic [159:0] ip_header;        // 20B = 160 bits
+    logic [159:0] tcp_header;       // 20B = 160 bits
+		logic [319:0] payload_data;			// 10B = 320 bits
+		logic  [31:0] crc;							//  4B =  32 bits
 		//The packet buffer (in memory) is padded or aligned to the 
 		//data-bus word width, hence the headers are word-aligned
 
+		//Cyclic Redundancy Code: CRC-32 for error checking
+		logic 				crc_valid;
+		logic [319:0] crc_data_in;
+		logic  [31:0] crc_output;
+		logic 				crc_done;
+
+		crc crc_dut (
+			.clk(clk),
+			.rst(rst),
+			.valid(crc_valid),
+			.data_raw(crc_data_in),
+			.crc(crc_output),
+			.done(crc_done)
+		);
+
     // ----------------------------------------
-    // Handshake logic (minimal behavior)
+    // Handshake logic
     // ----------------------------------------
-    //assign ready_in  = 1'b1;            // always ready for now
-    //assign valid_out = 1'b0;            // not driving FIFO yet
-    //assign data_out  = '0;
 		assign ready_in  = (curr_state == PAYLOAD) ? ready_out : 1'b1;
 		assign valid_out = (curr_state == PAYLOAD) ? valid_in  : 1'b0;
 
@@ -84,12 +101,18 @@ module packet_parser #(
                 if (valid_in && word_cnt == 9)   // 5 words: 5..9
                     next_state = TCP_HDR;
             TCP_HDR:
-                if (valid_in && word_cnt == 14)   // 5 words: 10..14
+                if (valid_in && word_cnt == 14)  // 5 words: 10..14
                     next_state = PAYLOAD;
             PAYLOAD:
-                if (valid_in && word_cnt == 24)
-										// (fixed for now) 10 words:15..24
-                    next_state = IDLE;
+                if (valid_in && word_cnt == 23)  // 10 words:15..24
+                    next_state = CRC_START;
+						CRC_START:
+								next_state = CRC_WAIT;
+						CRC_WAIT:
+							if(crc_done)
+								next_state = CRC_SEND;
+						CRC_SEND:
+							next_state = IDLE;
             default:
                 next_state = IDLE;
         endcase
@@ -100,9 +123,13 @@ module packet_parser #(
     // ----------------------------------------
     always_ff @(posedge clk or negedge rst) begin
         if (!rst) begin
+						data_out				<= '0;
             ethernet_header <= '0;
             ip_header       <= '0;
             tcp_header      <= '0;
+						payload_data		<= '0;
+						crc_valid			  <=  0;
+        		crc_data_in 		<= '0;
 
         end else begin
 						// next_state reflects the new header state in the same cycle as valid_in.
@@ -111,18 +138,33 @@ module packet_parser #(
             case (next_state)
 								IDLE:;
                 ETH_HDR: begin
-										ethernet_header <= {data_in, ethernet_header[127:32]};// 128-32 = 96
+									ethernet_header <= {data_in, ethernet_header[127:32]};
 								end
                 IP_HDR: begin
-                    ip_header <= {data_in, ip_header[159:32]}; 					// 160-32 = 128
+                	ip_header <= {data_in, ip_header[159:32]};
 								end
                 TCP_HDR: begin
-                    tcp_header <= {data_in, tcp_header[159:32]}; 				// 160-32 = 128
+                	tcp_header <= {data_in, tcp_header[159:32]};
 								end
-                PAYLOAD: 
-										if( valid_in && ready_out) begin
-                    	data_out <= data_in; 		// pass through
-										end
+                PAYLOAD: begin
+									payload_data <= {data_in, payload_data[319:32]};
+									if( valid_in && ready_out) begin
+                		data_out <= data_in; 		// pass through
+									end
+								end
+								CRC_START: begin
+									crc_valid <= 1;
+									crc_data_in <= payload_data;
+									$display("payload_data - %h", payload_data);
+								end
+								CRC_WAIT: begin
+									crc_valid <= 0;
+								end
+								CRC_SEND: begin
+									data_out <= crc_output;
+									$display("crc_output - %h", crc_output);
+								end
+										
             endcase
         end
     end
