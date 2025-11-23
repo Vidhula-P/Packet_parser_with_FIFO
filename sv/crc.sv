@@ -63,6 +63,7 @@ module crc(
     end else begin
       case(curr_state)
         IDLE: begin
+					$display("inside crc idle");
           temp_crc <= 32'hFFFFFFFF;
 					crc <= '0;
 					byte_cnt <= 0;
@@ -70,6 +71,7 @@ module crc(
         end //end of IDLE
 
 				COMPUTE: begin
+					$display("inside crc compute");
 					data_byte = data_raw[(319 - 8*byte_cnt) -: 8]; //extract 1B of data at a time
           // bit-level loop
           for (int i = 0; i < 8; i++) begin
@@ -83,8 +85,9 @@ module crc(
 				end //end of COMPUTE
 
 				FINISH: begin
-          	crc <= temp_crc ^ 32'hFFFFFFFF;
-            done <= 1;
+					$display("inside crc idle");
+          crc <= temp_crc ^ 32'hFFFFFFFF;
+          done <= 1;
         end //end of FINISH
       endcase
     end //end of else

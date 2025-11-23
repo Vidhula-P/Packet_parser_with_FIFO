@@ -65,8 +65,7 @@ module packet_parser #(
     // ----------------------------------------
     // Handshake logic
     // ----------------------------------------
-		assign ready_in  = (curr_state == PAYLOAD) ? ready_out : 1'b1;
-		assign valid_out = (curr_state == PAYLOAD) ? valid_in  : 1'b0;
+		assign ready_in = ((curr_state == PAYLOAD) || (curr_state == CRC_SEND)) ? ready_out : 1'b1;
 
     // ----------------------------------------
     // State + counter update
@@ -90,10 +89,12 @@ module packet_parser #(
     // ----------------------------------------
     always_comb begin
         next_state = curr_state; //in case of unexpected situation
+				valid_out = 0;
         case (curr_state)
-            IDLE:
+            IDLE: begin
                 if (valid_in && ready_in)
                     next_state = ETH_HDR;
+						end
             ETH_HDR:
                 if (valid_in && word_cnt == 4)   // 4 words: 1..4
                     next_state = IP_HDR;
@@ -103,18 +104,23 @@ module packet_parser #(
             TCP_HDR:
                 if (valid_in && word_cnt == 14)  // 5 words: 10..14
                     next_state = PAYLOAD;
-            PAYLOAD:
-                if (valid_in && word_cnt == 23)  // 10 words:15..24
+            PAYLOAD: begin
+								valid_out = valid_in;
+                if ( word_cnt == 24)  // 10 words:15..24
                     next_state = CRC_START;
+						end
 						CRC_START:
 								next_state = CRC_WAIT;
 						CRC_WAIT:
-							if(crc_done)
-								next_state = CRC_SEND;
-						CRC_SEND:
-							next_state = IDLE;
-            default:
+								if(crc_done)
+									next_state = CRC_SEND;
+						CRC_SEND: begin
+								valid_out = 1;
+								next_state = IDLE;
+						end
+            default: begin
                 next_state = IDLE;
+						end
         endcase
     end
 
@@ -139,20 +145,25 @@ module packet_parser #(
 								IDLE:;
                 ETH_HDR: begin
 									ethernet_header <= {data_in, ethernet_header[127:32]};
+									$display("(old) word_cnt inside ETH_HDR - %d", word_cnt);
 								end
                 IP_HDR: begin
                 	ip_header <= {data_in, ip_header[159:32]};
+									$display("(old) word_cnt inside IP_HDR - %d", word_cnt);
 								end
                 TCP_HDR: begin
                 	tcp_header <= {data_in, tcp_header[159:32]};
+									$display("(old) word_cnt inside TCP_HDR - %d", word_cnt);
 								end
                 PAYLOAD: begin
 									payload_data <= {data_in, payload_data[319:32]};
 									if( valid_in && ready_out) begin
                 		data_out <= data_in; 		// pass through
 									end
+									$display("(old) word_cnt inside PAYLOAD - %d", word_cnt);
 								end
 								CRC_START: begin
+									$display("Inside CRC_START");
 									crc_valid <= 1;
 									crc_data_in <= payload_data;
 									$display("payload_data - %h", payload_data);

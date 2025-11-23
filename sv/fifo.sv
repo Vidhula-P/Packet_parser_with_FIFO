@@ -38,6 +38,7 @@ module fifo #(
 			if (wr_en && !full) begin
 				mem[wptr] <= wdata;
 				wptr 			<= wptr + 1'b1;
+				$display("Writing %h to %d", wdata, wptr);
 			end
 		end
 	end
