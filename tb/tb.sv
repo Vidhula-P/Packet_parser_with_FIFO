@@ -139,9 +139,9 @@ module tb;
 
 	initial begin
 		reset_parser; wait (rst == 1); // halts the simulation at that point until rst equals 1
-		//test1;
+		test1;
 		test2;
-		//test1;
+		test1;
 
     $finish;
   end
