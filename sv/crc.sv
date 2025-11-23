@@ -2,13 +2,13 @@ module crc(
   input  logic         clk,
   input  logic         rst,
 	input  logic				 valid,
-  input  logic [255:0] data_raw,
+  input  logic [767:0] data_raw,
   output logic [31:0]  crc,
   output logic         done
 );
   logic [31:0] temp_crc, CRCPOLY;
   logic [7:0]  data_byte;
-  logic [4:0]  byte_cnt; // enough to count 0..23
+  logic [6:0]  byte_cnt; // enough to count 0..95
 
 	//Timescale
 	timeunit 10ns; timeprecision 100ps;
@@ -43,7 +43,7 @@ module crc(
 					if (valid)
           	next_state = COMPUTE;
 				COMPUTE: begin
-          if (byte_cnt == 5'd31)
+          if (byte_cnt == 7'd95)
            next_state = FINISH;
 				end
 				FINISH:
@@ -69,7 +69,7 @@ module crc(
         end //end of IDLE
 
 				COMPUTE: begin
-					data_byte = data_raw[(255 - 8*byte_cnt) -: 8]; //extract 1B of data at a time
+					data_byte = data_raw[(767 - 8*byte_cnt) -: 8]; //extract 1B of data at a time
           // bit-level loop
           for (int i = 0; i < 8; i++) begin
           	if ((temp_crc ^ data_byte) & 1)	
