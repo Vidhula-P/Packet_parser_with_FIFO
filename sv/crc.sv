@@ -22,8 +22,8 @@ module crc(
 	// ----------------------------------------
   // State update
   // ----------------------------------------
-	always_ff @(posedge clk or posedge rst) begin
-		if (rst) begin
+	always_ff @(posedge clk or negedge rst) begin
+		if (!rst) begin
     	curr_state <= IDLE;
     end else begin
     	curr_state <= next_state;
@@ -35,7 +35,7 @@ module crc(
   // ----------------------------------------
 	always_comb begin
 		next_state = curr_state; //in case of unexpected situation
-		if (rst) begin
+		if (!rst) begin
       next_state = IDLE;
     end else begin
       case(curr_state)
@@ -55,8 +55,8 @@ module crc(
   // ----------------------------------------
   // Data output
   // ----------------------------------------
-  always_ff @(posedge clk or posedge rst) begin
-    if (rst) begin
+  always_ff @(posedge clk or negedge rst) begin
+    if (!rst) begin
       temp_crc <= 32'hFFFFFFFF;
 			byte_cnt <= 0;
 			done <= 0;
@@ -64,6 +64,7 @@ module crc(
       case(curr_state)
         IDLE: begin
           temp_crc <= 32'hFFFFFFFF;
+					crc <= '0;
 					byte_cnt <= 0;
 					done <= 0;
         end //end of IDLE

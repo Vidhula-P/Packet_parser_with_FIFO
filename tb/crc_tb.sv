@@ -31,13 +31,16 @@ module crc_tb;
 
 	initial begin
 		rst = 1;
+		#3
+		rst = 0;
 		valid = 0;
 		data_raw = 0;
+		#3
+		rst = 1;
 
 		// Test Case 1
     $display("--- Test Case 1 ---");
     #7 @(posedge clk);
-    rst = 0;
     valid = 1; 
     data_raw = 320'h0123456789ABCDEF00112233445566778899AABBCCDDEEFF0F1E2D3C4B5A69780123456789ABCDEF; //Expected - 0x639A9721
 		@(posedge clk);
@@ -61,8 +64,9 @@ module crc_tb;
     
     // Test Case 3
     $display("--- Test Case 3 ---");
-    @(posedge clk);
-    valid = 1;
+    @(posedge clk); rst = 0;
+		@(posedge clk); rst = 1;
+    @(posedge clk); valid = 1;
     data_raw = 320'hFEDCBA987654321000000AAAAAAA555555555555CCCCCCCCCCCC647382914FEDCBA9876; //Expected - 0x3BCA2872
     @(posedge clk);
     valid = 0;
