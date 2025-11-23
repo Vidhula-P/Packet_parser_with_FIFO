@@ -22,7 +22,8 @@ The input data consists of:
 - Integration testing was done in `tb/tb.sv`.
 
 ## Simulation & Debugging
-Simulation outputs were verified using **SimVision**, ensuring correct handshake signals and data flow. ![Waveform debugging screenshot](output waveforms/simvision_waveform.png)
+Simulation outputs were verified using **SimVision**, ensuring correct handshake signals and data flow. 
+![Waveform debugging screenshot](output%20waveforms/simvision_waveform.png)
 
 
 ## Conclusion
