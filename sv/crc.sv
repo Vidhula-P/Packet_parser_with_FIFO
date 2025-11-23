@@ -1,6 +1,7 @@
 module crc(
   input  logic         clk,
   input  logic         rst,
+	input  logic				 valid,
   input  logic [255:0] data_raw,
   output logic [31:0]  crc,
   output logic         done
@@ -39,7 +40,7 @@ module crc(
     end else begin
       case(curr_state)
         IDLE:
-					if (!done)
+					if (valid)
           	next_state = COMPUTE;
 				COMPUTE: begin
           if (byte_cnt == 5'd31)
@@ -64,7 +65,7 @@ module crc(
         IDLE: begin
           temp_crc <= 32'hFFFFFFFF;
 					byte_cnt <= 0;
-					//done <= 0;
+					done <= 0;
         end //end of IDLE
 
 				COMPUTE: begin
