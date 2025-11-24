@@ -1,5 +1,4 @@
-# Packet Parser with DMA Engine
-*(DMA Engine pending)*
+# Packet Parser with FIFO
 
 This project implements a system that parses **96 B input data** and forwards the payload with added redundant CRC bits (**41 B output data**) to a FIFO buffer. The system structure is as follows.
 
