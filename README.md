@@ -13,7 +13,7 @@ The input data consists of:
 
 
 ## System Description
-- The parser extracts header information and forwards ** the payload** to a `32x16` FIFO buffer.
+- The parser extracts header information and forwards the payload to a `32x16` FIFO buffer.
 - The parser, FIFO and CRC unit were individually tested:
 - `tb/fifo_tb.sv`
 - `tb/parser_tb.sv`
