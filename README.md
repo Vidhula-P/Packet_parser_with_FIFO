@@ -22,7 +22,7 @@ The input data consists of:
 
 ## Simulation & Debugging
 Simulation outputs were verified using **SimVision**, ensuring correct handshake signals and data flow. 
-![Waveform debugging screenshot](images/parser_fifo_crc.png.png)
+![Waveform debugging screenshot](images/test1.png)
 
 Description of signals in the image
 - data_in         : 32 bit words sent from testbench to parser
